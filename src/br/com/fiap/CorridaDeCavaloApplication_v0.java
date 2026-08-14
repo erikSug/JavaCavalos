@@ -6,55 +6,94 @@ import java.util.concurrent.TimeUnit;
 public class CorridaDeCavaloApplication_v0 {
     public static void main(String[] args) {
         //RECURSOS
+        int QUANTIDADE_CAVALOS = 6;
 
+        boolean mudarAposta = false;
+        Scanner scanner = new Scanner(System.in);
         //VARIAVEIS
-        int posicaoCavalo1 = 0;
-        int posicaoCavalo2 = 0;
-        int posicaoCavalo3 = 0;
-        int posicaoCavalo4 = 0;
-        int posicaoCavalo5 = 0;
-        int posicaoCavalo6 = 0;
+        int[] posicaoCavalo = new int[QUANTIDADE_CAVALOS];
+        for (int i  = 0; i < posicaoCavalo.length; i++) {
+            posicaoCavalo[i] = 0;
+        }
+        String[] nomeCavalo = new String[QUANTIDADE_CAVALOS];
+        nomeCavalo[0] = "Special Week";
+        nomeCavalo[1] = "Grass Wonder";
+        nomeCavalo[2] = "El Condor Pasa";
+        nomeCavalo[3] = "Seiun Sky";
+        nomeCavalo[4] = "King Halo";
+        nomeCavalo[5] = "Tsurumaru Tsuyoshi";
+
+
         //INPUT DO USUARIO
         System.out.println("Bem vindo ao jogo!");
 
         System.out.println("Nessa corrida de 2000m, 6 cavalos estão competindo." +
                 "\nAposte no cavalo que você confia: ");
-        System.out.println("1 - Special Week");
-        System.out.println("2 - Grass Wonder");
-        System.out.println("3 - El Condor Pasa");
-        System.out.println("4 - Seiun Sky");
-        System.out.println("5 - King Halo");
-        System.out.println("6 - Tsurumaru Tsuyoshi");
-        Scanner scanner = new Scanner(System.in);
-        int aposta = scanner.nextInt();
+
+        int aposta = coletarAposta(scanner, nomeCavalo);
+
         scanner.nextLine();
         System.out.println("Pressione Enter para iniciar!");
         scanner.nextLine();
-        while (posicaoCavalo1 < 100 &&
-                posicaoCavalo2 < 100 &&
-                posicaoCavalo3 < 100 &&
-                posicaoCavalo4 < 100 &&
-                posicaoCavalo5 < 100 &&
-                posicaoCavalo6 < 100 ){
-            posicaoCavalo1 += Math.random() * 6;
-            System.out.println("1 - Special Week: " + posicaoCavalo1);
-            posicaoCavalo2 += Math.random() * 6;
-            System.out.println("2 - Grass Wonder: " + posicaoCavalo2);
-            posicaoCavalo3 += Math.random() * 6;
-            System.out.println("3 - El Condor Pasa: " + posicaoCavalo3);
-            posicaoCavalo4 += Math.random() * 6;
-            System.out.println("4 - Seiun Sky: " + posicaoCavalo4);
-            posicaoCavalo5 += Math.random() * 6;
-            System.out.println("5 - King Halo: " + posicaoCavalo5);
-            posicaoCavalo6 += Math.random() * 6;
-            System.out.println("6 - Tsurumaru Tsuyoshi: " + posicaoCavalo6);
-            System.out.println("------------------------------------");
-            esperar();
+
+        while (posicaoCavalo[0] < 100 &&
+                posicaoCavalo[1] < 100 &&
+                posicaoCavalo[2] < 100 &&
+                posicaoCavalo[3] < 100 &&
+                posicaoCavalo[4] < 100 &&
+                posicaoCavalo[5] < 100 )
+        {
+
+                for(int i = 0; i < posicaoCavalo.length; i++){
+                    posicaoCavalo[i] += Math.random() * 6;
+                    System.out.println((i+1) +"- "+ nomeCavalo[i] + ":" + posicaoCavalo[i]);
+                    System.out.println(mostrarProgresso(posicaoCavalo[i]));
+                    if (i == posicaoCavalo.length - 1 && posicaoCavalo[i] >= 30 && !mudarAposta){
+                        System.out.println("Você gostaria de trocar a aposta (s/n)? ");
+                        String resposta = scanner.nextLine();
+                        if (resposta.equals("s")){
+                            aposta = coletarAposta(scanner, nomeCavalo);
+                        }
+                        mudarAposta = true;
+                    }
+                }
+                System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+                esperar();
         }
         // FINALIZAÇÃO
         System.out.println("Fim de Jogo!");
-    }
 
+        int indexVencedor = 0;
+        for(int i = 0; i < posicaoCavalo.length - 1; i++){
+            if (posicaoCavalo[indexVencedor] < posicaoCavalo[i]){
+             indexVencedor = i;
+            }
+        }
+        System.out.println("Vencedor: " + nomeCavalo[indexVencedor]);
+        if (aposta == (indexVencedor + 1)){
+            System.out.println("Parabéns você ganhou.");
+        } else{
+            System.out.println("Que pena, não foi dessa vez.");
+        }
+    }
+    public static int coletarAposta(Scanner scanner, String[] nomeCavalo){
+        for (int i  = 0; i < nomeCavalo.length; i++) {
+            System.out.println((i + 1) + "- " + nomeCavalo[i]);
+        }
+        int escolha = scanner.nextInt();
+        return escolha;
+    }
+    public static String mostrarProgresso(int n){
+        String barra = "";
+        for (int i = 0; i < n; i++){
+            barra = barra.concat(".");
+        }
+        String chegada = "|";
+        for (int i = 0; i < 100/2 - n/2; i++){
+            chegada = " " + chegada;
+        }
+        return barra + "\uD800\uDC83" + chegada;
+    }
     static void esperar(){
         try {
             Thread.sleep(1000);
